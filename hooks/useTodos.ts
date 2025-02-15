@@ -1,122 +1,131 @@
-import { useState, useEffect } from "react";
-import { Todo, TodoFormData } from "@/dto/todo";
-import { useToast } from "@/hooks/use-toast";
-import { FilterOption, FILTER_OPTIONS } from "../constants/filters";
+"use client";
+import { TodoFormData } from "@/dto/todo";
+import { Todo } from "@prisma/client";
+import { useCallback, useEffect, useState } from "react";
+import axios from "axios";
+export interface LoadingStates {
+  todos: boolean;
+  add: boolean;
+  edit: boolean;
+  delete: boolean;
+  uploadPhoto: boolean;
+}
 
-export function useTodos() {
+// export type LoadingStates = Record<string, boolean>;
+
+export const useTodos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<FilterOption>(FILTER_OPTIONS.ALL);
-  const { toast } = useToast();
 
-  const fetchTodos = async () => {
+  const [loadingStates, setLoadingStates] = useState({
+    todos: false,
+    add: false,
+    edit: false,
+    delete: false,
+    uploadPhoto: false,
+  });
+  const setLoading = (key: keyof LoadingStates, value: boolean) => {
+    console.log("type of key", typeof key);
+    setLoadingStates((prev) => {
+      return { ...prev, [key]: value };
+    });
+  };
+
+  const fetchTodos = useCallback(async () => {
+    setLoading("todos", true);
     try {
-      setIsLoading(true);
       const response = await fetch("/api/todos");
       const data = await response.json();
       setTodos(data);
+      setLoading("todos", false);
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to fetch todos",
-      });
-    } finally {
-      setIsLoading(false);
+      setLoading("todos", false);
+      console.log("Fetch todos failed", error);
     }
-  };
+  }, []);
 
-  const addTodo = async (todoData: TodoFormData) => {
+  useEffect(() => {
+    console.log("refetching todos");
+    fetchTodos();
+  }, [fetchTodos]);
+
+  const [filter, setFilter] = useState<string>("ALL");
+
+  const addTodo = async (todo: TodoFormData) => {
+    setLoading("add", true);
+    const { text, imageUrl } = todo;
     try {
-      const response = await fetch("/api/todos", {
+      await fetch("/api/todos", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(todoData),
+        body: JSON.stringify({
+          text,
+          imageUrl,
+        }),
       });
-
-      if (!response.ok) throw new Error("Failed to add todo");
-
-      await fetchTodos();
-      return true;
+      // await fetchTodos();
+      setLoading("add", false);
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to add todo",
-      });
-      return false;
-    }
-  };
-
-  const updateTodo = async (id: string, todoData: Partial<Todo>) => {
-    try {
-      const response = await fetch(`/api/todos/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(todoData),
-      });
-
-      if (!response.ok) throw new Error("Failed to update todo");
-
-      await fetchTodos();
-      return true;
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update todo",
-      });
-      return false;
+      setLoading("add", false);
+      console.error("Add todo failed", error);
     }
   };
 
   const deleteTodo = async (id: string) => {
+    setLoading("delete", true);
     try {
-      const response = await fetch(`/api/todos/${id}`, {
+      await fetch(`/api/todos/${id}`, {
         method: "DELETE",
       });
-
-      if (!response.ok) throw new Error("Failed to delete todo");
-
-      await fetchTodos();
-      return true;
+      // await fetchTodos();
+      setLoading("delete", false);
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete todo",
-      });
-      return false;
+      setLoading("delete", false);
+      console.log("Delete todo failed", error);
     }
+  };
+
+  const editTodo = async (todo: Todo) => {
+    console.log("editTodo being called");
+    console.log("todo in edit todo", todo);
+    setLoading("edit", true);
+    const { id } = todo;
+    try {
+      const res = await axios(`/api/todos/${id}`, {
+        method: "PUT",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("res", res);
+      setLoading("edit", false);
+    } catch (error) {
+      setLoading("edit", false);
+      console.error("Edit todo failed", error);
+    }
+  };
+
+  const changeFilterTo = (filter: string) => {
+    setFilter(filter);
   };
 
   const filteredTodos = todos.filter((todo) => {
-    switch (filter) {
-      case FILTER_OPTIONS.COMPLETED:
-        return todo.completed;
-      case FILTER_OPTIONS.UNCOMPLETED:
-        return !todo.completed;
-      default:
-        return true;
-    }
+    if (filter === "completed") return todo.completed;
+    if (filter === "uncompleted") return !todo.completed;
+    return true;
   });
-
-  useEffect(() => {
-    fetchTodos();
-  }, []);
 
   return {
     todos: filteredTodos,
-    isLoading,
+    loadingStates,
+    setLoading,
     filter,
-    setFilter,
     addTodo,
-    updateTodo,
+    editTodo,
     deleteTodo,
-    refreshTodos: fetchTodos,
+    changeFilterTo,
   };
-}
+};

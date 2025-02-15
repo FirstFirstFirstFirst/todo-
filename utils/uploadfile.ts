@@ -1,5 +1,8 @@
 // utils/uploadfile.ts
-export async function uploadToGoogleDrive(file: File, namePrefix = "upload") {
+export async function uploadToGoogleDrive(
+  file: File,
+  namePrefix = "upload"
+): Promise<string> {
   if (!file) {
     throw new Error("Please provide a file to upload");
   }

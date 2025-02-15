@@ -2,7 +2,7 @@ export interface Todo {
   id: string;
   text: string;
   completed: boolean;
-  imageUrl?: string;
+  imageUrl?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }

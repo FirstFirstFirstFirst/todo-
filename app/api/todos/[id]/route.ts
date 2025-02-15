@@ -9,7 +9,7 @@ export async function PUT(
     const { text, completed, imageUrl } = await request.json();
     const todo = await prisma.todo.update({
       where: {
-        id: params.id,
+        id: await params.id,
       },
       data: {
         text,
@@ -40,7 +40,7 @@ export async function DELETE(
     });
     return NextResponse.json({
       message: `Todo deleted with ID: ${todo.id}`,
-      todo, 
+      todo,
     });
   } catch (error) {
     return NextResponse.json(

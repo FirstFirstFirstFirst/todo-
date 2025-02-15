@@ -2,7 +2,7 @@
 import { google } from "googleapis";
 import { NextRequest, NextResponse } from "next/server";
 import * as fs from "fs";
-import * as path from "path";
+
 import { writeFile } from "fs/promises";
 import { join } from "path";
 
