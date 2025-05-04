@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <div className="min-h-screen min-w-screen flex flex-col">
           <Navbar />
-          <main className="h-[calc(100vh-3.5rem)]">{children}</main>
+          <main className="h-[calc(100vh-3.5rem)] ">{children}</main>
         </div>
         <Toaster />
       </body>

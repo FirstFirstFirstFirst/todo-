@@ -2,8 +2,8 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 
-const inputVariants = cva(
-  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+const textareaVariants = cva(
+  "flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-3 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
   {
     variants: {
       variant: {
@@ -19,7 +19,7 @@ const inputVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-9 px-4 py-2",
+        default: "h-9 px-4 py-3",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
@@ -32,22 +32,21 @@ const inputVariants = cva(
   }
 );
 
-export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
-    VariantProps<typeof inputVariants> {}
+export interface TextareaProps
+  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "size">,
+    VariantProps<typeof textareaVariants> {}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, variant, size, type, ...props }, ref) => {
+const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+  ({ className, variant, size, ...props }, ref) => {
     return (
-      <input
-        type={type}
-        className={cn(inputVariants({ variant, size, className }))}
+      <textarea
+        className={cn(textareaVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       />
     );
   }
 );
-Input.displayName = "Input";
+Textarea.displayName = "Textarea";
 
-export { Input };
+export { Textarea };

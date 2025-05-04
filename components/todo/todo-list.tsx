@@ -33,7 +33,7 @@ const TodoList = ({
     try {
       let imageUrl = "";
       if (editImage) {
-        const imageUrl = await uploadToGoogleDrive(editImage);
+        imageUrl = await uploadToGoogleDrive(editImage);
         setEditImageUrl(imageUrl);
       }
       const updatedTodo = { ...todo, text: editText, imageUrl };
