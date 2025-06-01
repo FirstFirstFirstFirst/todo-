@@ -4,6 +4,7 @@ import { google } from "@ai-sdk/google";
 
 export async function POST(request: Request) {
   try {
+    
     const GOOGLE_GENERATIVE_AI_API_KEY =
       process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
     if (GOOGLE_GENERATIVE_AI_API_KEY === "") {
