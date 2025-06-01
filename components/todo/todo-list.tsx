@@ -18,6 +18,7 @@ const TodoList = ({
   editTodo,
   deleteTodo,
 }: TodoListProps) => {
+  console.log("todo in todolist", todos);
   const [editingTodoId, setEditingTodoId] = useState("");
   const [editText, setEditText] = useState("");
   const [editImage, setEditImage] = useState<File | null>(null);

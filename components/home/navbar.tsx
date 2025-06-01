@@ -1,6 +1,13 @@
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
@@ -16,9 +23,9 @@ const Navbar = () => {
                 Todo
               </Button>
             </Link>
-            <Link href={"/"}>
+            <Link href={"/chat"}>
               <Button variant={"link"} className="text-white p-0 h-fit">
-                Coming soon
+                Chat
               </Button>
             </Link>
             <Link href={"/"}>
@@ -28,14 +35,19 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="space-x-4 flex items-center">
-            <Link href={"/"}>
+            <SignedOut>
               <Button variant={"link"} className="text-white p-0 h-fit">
-                Contact
+                <SignInButton />
               </Button>
-            </Link>
-            <Link href={"/"}>
-              <Button variant={"secondary"}>Get started</Button>
-            </Link>
+              <Button variant={"secondary"}>
+                <SignUpButton />
+              </Button>
+            </SignedOut>
+            <SignedIn>
+              <div className="flex p-0.5 bg-white rounded-full">
+                <UserButton />
+              </div>
+            </SignedIn>
           </div>
         </div>
       </div>

@@ -33,6 +33,7 @@ const ChatPage = () => {
       }`}
     >
       {!isSubmitted && <PageDescription />}
+      
       {isSubmitted && (
         <div className="flex-1 py-6 px-4 bg-black">
           <ScrollArea className="bg-black">

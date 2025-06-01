@@ -6,7 +6,7 @@ export async function uploadToGoogleDrive(
   if (!file) {
     throw new Error("Please provide a file to upload");
   }
-
+  
   const formData = new FormData();
   formData.append("file", file);
   formData.append("namePrefix", namePrefix);

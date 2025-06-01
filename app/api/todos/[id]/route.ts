@@ -9,7 +9,7 @@ export async function PUT(
     const { text, completed, imageUrl } = await request.json();
     const todo = await prisma.todo.update({
       where: {
-        id: await params.id,
+        id: params.id,
       },
       data: {
         text,

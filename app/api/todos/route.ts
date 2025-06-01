@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     // const { text, imageUrl } = await jsonResponse;
     const { text, imageUrl } = await request.json();
     // console.log("successfully retrieved text and imageUrl", jsonResponse);
+    console.log("text, imageUrl", text, imageUrl);
     const todo = await prisma.todo.create({
       data: {
         text,
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
         completed: false,
       },
     });
+    console.log("todo", todo)
     return NextResponse.json(todo);
   } catch (error) {
     console.log("error", error);

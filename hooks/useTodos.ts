@@ -11,7 +11,7 @@ export interface LoadingStates {
   uploadPhoto: boolean;
 }
 
-// export type LoadingStates = Record<string, boolean>;
+
 
 export const useTodos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -23,6 +23,9 @@ export const useTodos = () => {
     delete: false,
     uploadPhoto: false,
   });
+
+  const [filter, setFilter] = useState<string>("ALL");
+
   const setLoading = (key: keyof LoadingStates, value: boolean) => {
     console.log("type of key", typeof key);
     setLoadingStates((prev) => {
@@ -48,11 +51,10 @@ export const useTodos = () => {
     fetchTodos();
   }, [fetchTodos]);
 
-  const [filter, setFilter] = useState<string>("ALL");
-
   const addTodo = async (todo: TodoFormData) => {
     setLoading("add", true);
     const { text, imageUrl } = todo;
+    console.log("todo", todo);
     try {
       await fetch("/api/todos", {
         method: "POST",
@@ -64,7 +66,7 @@ export const useTodos = () => {
           imageUrl,
         }),
       });
-      // await fetchTodos();
+      await fetchTodos();
       setLoading("add", false);
     } catch (error) {
       setLoading("add", false);
@@ -78,7 +80,7 @@ export const useTodos = () => {
       await fetch(`/api/todos/${id}`, {
         method: "DELETE",
       });
-      // await fetchTodos();
+      await fetchTodos();
       setLoading("delete", false);
     } catch (error) {
       setLoading("delete", false);
@@ -94,10 +96,7 @@ export const useTodos = () => {
     try {
       const res = await axios(`/api/todos/${id}`, {
         method: "PUT",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
+        data: todo,
       });
 
       console.log("res", res);
